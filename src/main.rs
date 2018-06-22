@@ -46,7 +46,7 @@ fn main() {
                             let execution_result = execute_statement(&mut table, statement);
                             match execution_result {
                                 Err(err) => println!("Error: {:?}", err),
-                                Ok(()) => println!("Executed")
+                                Ok(()) => println!("Executed.")
                             }
                         }
                     }
@@ -100,15 +100,19 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
 
 fn execute_statement(table: &mut Table, statement: Statement) -> Result<(), String> {
     match statement {
-        Statement::Insert(row) => {
-            table.rows.push(row);
-            return Ok(())
-        },
-        Statement::Select => {
-            for row in &table.rows {
-                println!("({} {} {})", row.id, row.username, row.email);
-            }
-            return Ok(())
-        }
+        Statement::Insert(row) => return execute_insert(table, row),
+        Statement::Select => return execute_select(table)
     }
+}
+
+fn execute_insert(table: &mut Table, row: Row) -> Result<(), String> {
+    table.rows.push(row);
+    return Ok(())
+}
+
+fn execute_select(table: &Table) -> Result<(), String> {
+    for row in &table.rows {
+        println!("({}, {}, {})", row.id, row.username, row.email);
+    }
+    return Ok(())
 }
