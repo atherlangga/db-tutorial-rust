@@ -21,8 +21,32 @@ describe 'database' do
         ])
         expect(result).to match_array([
             "Executed.",
-            "(1 user1 person1@example.com)",
+            "(1, user1, person1@example.com)",
             "Executed.",
         ])
+    end
+
+    it 'allows inserting long strings' do
+        long_username = "a"*32
+        long_email = "a"*255
+        script = [
+            "insert 1 #{long_username} #{long_email}",
+            "select",
+            ".exit"
+        ]
+        result = run_script(script)
+        expect(result).to match_array([
+            "Executed.",
+            "(1, #{long_username}, #{long_email})",
+            "Executed.",
+        ])
+    end
+
+    it 'prints an error message if id is negative' do
+        script = [
+            "insert -1 angga foo@bar.com",
+            "select",
+            ".exit",
+        ]
     end
 end
