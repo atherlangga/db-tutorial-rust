@@ -1,3 +1,6 @@
-
+# Rust ignores
 /target
 **/*.rs.bk
+
+# IDE ignores
+.idea
