@@ -22,9 +22,8 @@ enum Statement {
     Select,
 }
 
-
 fn main() {
-    let mut table = Table{ rows: Vec::new() };
+    let mut table = Table { rows: Vec::new() };
 
     let mut rl = rustyline::Editor::<()>::new();
     loop {
@@ -46,24 +45,23 @@ fn main() {
                             let execution_result = execute_statement(&mut table, statement);
                             match execution_result {
                                 Err(err) => println!("Error: {:?}", err),
-                                Ok(()) => println!("Executed.")
+                                Ok(()) => println!("Executed."),
                             }
                         }
                     }
                 }
-
-            },
+            }
             Err(rustyline::error::ReadlineError::Interrupted) => {
                 println!("CTRL-C");
-                break
+                break;
             }
             Err(rustyline::error::ReadlineError::Eof) => {
                 println!("CTRL-D");
-                break
+                break;
             }
-            Err(err) =>  {
+            Err(err) => {
                 println!("Error: {:?}", err);
-                break
+                break;
             }
         }
     }
@@ -82,16 +80,21 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
         let (id, username, email) = scan_fmt!(
             &command.to_lowercase(),
             "insert {} {} {}",
-            u32, String, String);
+            u32,
+            String,
+            String
+        );
 
         if let (Some(id), Some(username), Some(email)) = (id, username, email) {
-            return Ok(Statement::Insert(Row { id, username, email }));
+            return Ok(Statement::Insert(Row {
+                id,
+                username,
+                email,
+            }));
         }
 
-        return Err(format!("Could not parse {}", command))
-
-    }
-    else if command.to_uppercase().starts_with("SELECT") {
+        return Err(format!("Could not parse {}", command));
+    } else if command.to_uppercase().starts_with("SELECT") {
         return Ok(Statement::Select);
     }
 
@@ -101,18 +104,18 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
 fn execute_statement(table: &mut Table, statement: Statement) -> Result<(), String> {
     match statement {
         Statement::Insert(row) => return execute_insert(table, row),
-        Statement::Select => return execute_select(table)
+        Statement::Select => return execute_select(table),
     }
 }
 
 fn execute_insert(table: &mut Table, row: Row) -> Result<(), String> {
     table.rows.push(row);
-    return Ok(())
+    return Ok(());
 }
 
 fn execute_select(table: &Table) -> Result<(), String> {
     for row in &table.rows {
         println!("({}, {}, {})", row.id, row.username, row.email);
     }
-    return Ok(())
+    return Ok(());
 }
