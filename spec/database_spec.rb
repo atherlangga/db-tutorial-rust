@@ -48,5 +48,10 @@ describe 'database' do
             "select",
             ".exit",
         ]
+        result = run_script(script)
+        expect(result).to match_array([
+            "Error: \"ID must be positive\"",
+            "Executed.",
+        ])
     end
 end

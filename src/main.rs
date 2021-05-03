@@ -85,6 +85,10 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
             String
         );
 
+        if let None = id {
+            return Err(format!("ID must be positive"))
+        }
+
         if let (Some(id), Some(username), Some(email)) = (id, username, email) {
             return Ok(Statement::Insert(Row {
                 id,
