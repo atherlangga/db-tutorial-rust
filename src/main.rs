@@ -37,16 +37,17 @@ fn main() {
                         Err(err) => println!("Error: {:?}", err),
                         _ => (),
                     }
-                } else {
-                    let parse_statement_result = parse_statement(line);
-                    match parse_statement_result {
-                        Err(err) => println!("Error: {:?}", err),
-                        Ok(statement) => {
-                            let execution_result = execute_statement(&mut table, statement);
-                            match execution_result {
-                                Err(err) => println!("Error: {:?}", err),
-                                Ok(()) => println!("Executed."),
-                            }
+                    continue;
+                }
+
+                let parse_statement_result = parse_statement(line);
+                match parse_statement_result {
+                    Err(err) => println!("Error: {:?}", err),
+                    Ok(statement) => {
+                        let execution_result = execute_statement(&mut table, statement);
+                        match execution_result {
+                            Err(err) => println!("Error: {:?}", err),
+                            Ok(()) => println!("Executed."),
                         }
                     }
                 }
@@ -86,7 +87,7 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
         );
 
         if let None = id {
-            return Err(format!("ID must be positive"))
+            return Err(format!("ID must be positive"));
         }
 
         if let (Some(id), Some(username), Some(email)) = (id, username, email) {
@@ -106,10 +107,10 @@ fn parse_statement(command: &str) -> Result<Statement, String> {
 }
 
 fn execute_statement(table: &mut Table, statement: Statement) -> Result<(), String> {
-    match statement {
-        Statement::Insert(row) => return execute_insert(table, row),
-        Statement::Select => return execute_select(table),
-    }
+    return match statement {
+        Statement::Insert(row) => execute_insert(table, row),
+        Statement::Select => execute_select(table),
+    };
 }
 
 fn execute_insert(table: &mut Table, row: Row) -> Result<(), String> {
